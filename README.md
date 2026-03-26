@@ -25,7 +25,6 @@ Dashboards/
 
 This repository hosts interactive dashboards produced by the Data Management project, including:
 
-- **Patient-level visualizations** – Gantt charts and timelines for clinical data
 - **Summary dashboards** – Aggregated statistics and outcome reports
 - **Exploratory analyses** – Plots and figures generated during data exploration
 
@@ -42,7 +41,7 @@ No build steps are required — all files are static HTML generated externally a
 To add a new dashboard:
 
 1. Generate the HTML output from Python (e.g., `plotly.io.write_html()`, `panel.save()`, or export from your notebook).
-2. Place the file (and any accompanying asset folders) inside the `projects/` directory.
+2. Place the file (and any accompanying asset folders) inside the `real_projects/` directory.
 3. Add a link to `index.html` under the appropriate section.
 4. Commit and push to `main` — deployment is automatic.
 
@@ -52,13 +51,13 @@ All data underlying these dashboards resides exclusively in the private `Data_Ma
 
 ## 🛠️ Technologies
 
-| Tool | Purpose |
-|------|---------|
-| Python | Dashboard generation |
+| Tool                    | Purpose                               |
+| ----------------------- | ------------------------------------- |
+| Python                  | Dashboard generation                  |
 | plotly / altair / bokeh | Interactive and static visualizations |
-| Jupyter / panel / dash | HTML report rendering |
-| GitHub Pages | Static site hosting |
-| GitHub Actions | Automated deployment |
+| Jupyter / panel / dash  | HTML report rendering                 |
+| GitHub Pages            | Static site hosting                   |
+| GitHub Actions          | Automated deployment                  |
 
 ## 📬 Contact
 

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REDCap Dashboard Hub</title>
+
+  <!-- ─────────────────────────────────────────────────────────────────────────
+       Google Fonts — loaded from Google's CDN.
+       Requires an internet connection; falls back to system sans-serif fonts.
+  ──────────────────────────────────────────────────────────────────────────── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── CSS Reset & base ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+      background: #FDF4EC;
+      color: #3D1A00;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Navigation bar ───────────────────────────────────────────────────── */
+    .navbar {
+      background: #1C1009;
+      padding: 12px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .navbar .brand {
+      color: white;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: -0.2px;
+    }
+    .navbar .brand span { opacity: 0.65; font-weight: 400; }
+    .navbar .nav-links a {
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      margin-left: 24px;
+      font-size: 0.88rem;
+      transition: color 0.2s;
+    }
+    .navbar .nav-links a:hover { color: #FCD34D; }
+
+    /* ── Hero header ──────────────────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, #7C2D12 0%, #C2410C 55%, #F59E0B 100%);
+      color: white;
+      text-align: center;
+      padding: 72px 24px 56px;
+      position: relative;
+      overflow: hidden;
+    }
+    /* subtle decorative circles */
+    .hero::before, .hero::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+    }
+    .hero::before { width: 380px; height: 380px; top: -120px; left: -80px; }
+    .hero::after  { width: 260px; height: 260px; bottom: -80px; right: -60px; }
+    .hero-inner { position: relative; z-index: 1; }
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      letter-spacing: -0.6px;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      max-width: 620px;
+      margin: 0 auto 32px;
+    }
+    .hero .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+    .hero .stat {
+      text-align: center;
+      padding: 14px 36px;
+      border-right: 1px solid rgba(255,255,255,0.2);
+    }
+    .hero .stat:last-child { border-right: none; }
+    .hero .stat .num {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #FCD34D;
+    }
+    .hero .stat .lbl {
+      font-size: 0.78rem;
+      opacity: 0.75;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      margin-top: 2px;
+    }
+
+    /* ── Section header ───────────────────────────────────────────────────── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 26px;
+    }
+    .section-header h2 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #7C2D12;
+      white-space: nowrap;
+    }
+    .section-header .line {
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, #C2410C 0%, transparent 100%);
+      border-radius: 2px;
+    }
+
+    /* ── Main content ─────────────────────────────────────────────────────── */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 52px 28px;
+      flex: 1;
+    }
+
+    /* ── Project card grid ────────────────────────────────────────────────── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 26px;
+      margin-bottom: 60px;
+    }
+
+    /* ── Individual project card ──────────────────────────────────────────── */
+    .project-card {
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+      padding: 30px 26px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border-top: 4px solid #C2410C;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #C2410C, #F59E0B);
+    }
+    .project-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.13);
+    }
+    .project-card .card-icon {
+      font-size: 2.2rem;
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+    .project-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #7C2D12;
+      line-height: 1.3;
+    }
+    .project-card p {
+      font-size: 0.91rem;
+      color: #92400E;
+      flex: 1;
+      line-height: 1.55;
+    }
+    .project-card .card-meta {
+      font-size: 0.78rem;
+      color: #95A5A6;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-view {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #C2410C, #F59E0B);
+      color: white;
+      text-decoration: none;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-align: center;
+      margin-top: 4px;
+      transition: opacity 0.18s, transform 0.18s;
+      box-shadow: 0 2px 8px rgba(194,65,12,0.35);
+    }
+    .btn-view:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* ── Empty-state message (shown when no projects yet) ─────────────────── */
+    .empty-state {
+      text-align: center;
+      padding: 64px 24px;
+      color: #7F8C8D;
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 2px 12px rgba(124,45,18,0.08);
+      margin-bottom: 60px;
+    }
+    .empty-state .icon { font-size: 3.8rem; margin-bottom: 16px; }
+    .empty-state h3 { font-size: 1.25rem; margin-bottom: 10px; color: #92400E; font-weight: 600; }
+    .empty-state p  { font-size: 0.95rem; max-width: 540px; margin: 0 auto 20px; }
+    .empty-state code {
+      background: #EEF1F5;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 0.88rem;
+    }
+
+    /* ── How-to section ───────────────────────────────────────────────────── */
+    .how-to {
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 2px 14px rgba(124,45,18,0.10);
+      padding: 38px;
+      margin-bottom: 44px;
+    }
+    .how-to h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #7C2D12;
+      margin-bottom: 24px;
+    }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 22px;
+    }
+    .step {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .step .step-num {
+      flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, #C2410C, #F59E0B);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(194,65,12,0.3);
+    }
+    .step .step-text h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #7C2D12;
+    }
+    .step .step-text p {
+      font-size: 0.84rem;
+      color: #7F8C8D;
+      line-height: 1.5;
+    }
+
+    /* ── Footer ───────────────────────────────────────────────────────────── */
+    footer {
+      background: #1C1009;
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+      padding: 22px 24px;
+      font-size: 0.85rem;
+    }
+    footer a { color: #FCD34D; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Responsive adjustments ───────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 2rem; }
+      .hero .stat { padding: 12px 20px; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .navbar .nav-links { display: none; }
+      .container { padding: 36px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Navigation bar ─────────────────────────────────────────────────────── -->
+<nav class="navbar">
+  <a class="brand" href="#">
+    &#128202; Dashboard Hub <span>&nbsp;/&nbsp; REDCap Projects</span>
+  </a>
+  <div class="nav-links">
+    <a href="https://github.com/CansecoRibas/Data_management" target="_blank" rel="noopener">
+      &#128279; Repository
+    </a>
+    <a href="https://github.com/CansecoRibas/Data_management/tree/master/code/dashboards" target="_blank" rel="noopener">
+      &#128218; Docs
+    </a>
+  </div>
+</nav>
+
+<!-- ── Hero header ────────────────────────────────────────────────────────── -->
+<header class="hero">
+  <div class="hero-inner">
+    <h1>&#128202; REDCap Dashboard Hub</h1>
+    <p>
+      Interactive dashboards for all active research projects.
+      Charts are generated automatically from live REDCap data and published here via GitHub Pages.
+    </p>
+    <div class="stats-row">
+      <div class="stat">
+        <div class="num" id="project-count">0</div>
+        <div class="lbl">Projects</div>
+      </div>
+      <div class="stat">
+        <div class="num">Plotly</div>
+        <div class="lbl">Chart Engine</div>
+      </div>
+      <div class="stat">
+        <div class="num">REDCap</div>
+        <div class="lbl">Data Source</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ── Main content ───────────────────────────────────────────────────────── -->
+<main class="container">
+
+  <!-- ── Project dashboards ─────────────────────────────────────────────── -->
+  <div class="section-header">
+    <h2>&#128203; Project Dashboards</h2>
+    <div class="line"></div>
+  </div>
+
+  <div class="projects-grid" id="projects-grid">
+
+    <!-- ================================================================
+         PROJECT CARDS
+         Each card is inserted automatically when you run a project
+         dashboard notebook (Cell 9). You can also add cards manually
+         by copying the block below and filling in the details.
+
+         DO NOT remove the markers below — they are used by the notebook
+         to find the correct insertion point.
+    ================================================================ -->
+
+                                                                                                                                                                                                                                                                                                                                                                                                                            <!-- project-card:PYRAMID -->
+        <div class="project-card" id="card-pyramid">
+          <div class="card-icon">&#128202;</div>
+          <h3>PYRAMID Project Dashboard</h3>
+          <p>This multicenter prospective study investigates long-term complications, risk factors, and biological mechanisms in survivors of acute respiratory failure (ARF) after ICU admission. It combines clinical data with transcriptomic, immune-response, and microbiome analyses to identify patient phenotypes and develop predictive models using AI. Participants undergo follow-up visits up to one year after discharge, including functional, cognitive, and quality-of-life assessments. The ultimate goal is to guide precision medicine and propose standardized care pathways for this under-recognized patient population.</p>
+          <div class="card-meta">Updated: 2026-03-26</div>
+          <a href="real_projects/PYRAMID_dashboard.html" class="btn-view">View Dashboard &#8594;</a>
+        </div>
+        <!-- /project-card:PYRAMID -->
+        <!-- end-project-cards -->
+
+  </div><!-- /#projects-grid -->
+
+  <!-- Empty state — hidden automatically when cards are present -->
+  <div class="empty-state" id="empty-state">
+    <div class="icon">&#128202;</div>
+    <h3>No dashboards published yet</h3>
+    <p>
+      To create your first dashboard, open a project notebook in
+      <code>code/dashboards/general_code/redcap_dashboard.ipynb</code>,
+      fill in the <strong>PROJECT PERSONALIZATION</strong> section, and run all cells.
+      The HTML file will be saved here automatically.
+    </p>
+    <p style="margin-top: 12px;">
+      See <a href="https://github.com/CansecoRibas/Data_management/blob/master/code/dashboards/README.md">README.md</a>
+      for detailed instructions.
+    </p>
+  </div>
+
+  <!-- ── How to add a new dashboard ──────────────────────────────────── -->
+  <div class="section-header" style="margin-top: 20px;">
+    <h2>&#128218; How to add a new dashboard</h2>
+    <div class="line"></div>
+  </div>
+
+  <div class="how-to">
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <h4>Copy the template</h4>
+          <p>Duplicate <code>general_code/redcap_dashboard.ipynb</code> into your project folder.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <h4>Edit Cell 1</h4>
+          <p>Set <code>PROJECT_KEY</code>, title, and the <code>CHARTS</code> list. That's the only part you need to change.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <h4>Run all cells</h4>
+          <p>The notebook fetches data from REDCap, renders charts, and exports the HTML file.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text">
+          <h4>Commit &amp; push</h4>
+          <p>Push the HTML in <code>docs/dashboards/</code> to GitHub. The live page updates instantly.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ── Footer ─────────────────────────────────────────────────────────────── -->
+<footer>
+  &#169; Data Management &mdash;
+  <a href="https://github.com/CansecoRibas/Data_management" target="_blank" rel="noopener">
+    GitHub Repository
+  </a>
+  &nbsp;&#183;&nbsp;
+  Dashboards powered by
+  <a href="https://plotly.com/python/" target="_blank" rel="noopener">Plotly</a>
+  &nbsp;&#183;&nbsp;
+  Data sourced from <a href="https://www.project-redcap.org/" target="_blank" rel="noopener">REDCap</a>
+</footer>
+
+<!-- ── Inline script: count project cards & toggle empty state ──────────── -->
+<script>
+  (function () {
+    // Count the number of project cards that have been added to the grid.
+    // Cards are identified by the class "project-card".
+    var cards = document.querySelectorAll('.project-card');
+    var count = cards.length;
+
+    // Update the counter in the hero section
+    document.getElementById('project-count').textContent = count;
+
+    // Show or hide the empty-state message depending on whether cards exist
+    var emptyState = document.getElementById('empty-state');
+    if (emptyState) {
+      emptyState.style.display = count > 0 ? 'none' : 'block';
+    }
+  })();
+</script>
+
+</body>
+</html>
