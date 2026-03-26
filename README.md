@@ -13,8 +13,8 @@ The dashboards are published via GitHub Pages and can be accessed at:
 ```
 Dashboards/
 ├── index.html              # Main landing page (GitHub Pages entry point)
-├── dashboards/             # Dashboard HTML files organized by project
-│   └── ...                 # Interactive HTML dashboards (generated from R)
+├── projects/               # Dashboard HTML files organized by project
+│   └── ...                 # Interactive HTML dashboards (generated from Python)
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml      # Automated GitHub Pages deployment workflow
@@ -29,7 +29,7 @@ This repository hosts interactive dashboards produced by the Data Management pro
 - **Summary dashboards** – Aggregated statistics and outcome reports
 - **Exploratory analyses** – Plots and figures generated during data exploration
 
-Each dashboard is a standalone HTML file generated with R (using packages such as `plotly`, `ggplot2`, `flexdashboard`, or similar tools), and can be opened directly in any modern web browser.
+Each dashboard is a standalone HTML file generated with Python (using packages such as `plotly`, `altair`, `bokeh`, or similar tools), and can be opened directly in any modern web browser.
 
 ## 🚀 Deployment
 
@@ -41,8 +41,8 @@ No build steps are required — all files are static HTML generated externally a
 
 To add a new dashboard:
 
-1. Generate the HTML output from R (e.g., `rmarkdown::render()` or export from `flexdashboard`).
-2. Place the file (and any accompanying asset folders) inside the `dashboards/` directory.
+1. Generate the HTML output from Python (e.g., `plotly.io.write_html()`, `panel.save()`, or export from your notebook).
+2. Place the file (and any accompanying asset folders) inside the `projects/` directory.
 3. Add a link to `index.html` under the appropriate section.
 4. Commit and push to `main` — deployment is automatic.
 
@@ -54,9 +54,9 @@ All data underlying these dashboards resides exclusively in the private `Data_Ma
 
 | Tool | Purpose |
 |------|---------|
-| R | Dashboard generation |
-| plotly / ggplot2 | Interactive and static visualizations |
-| R Markdown / flexdashboard | HTML report rendering |
+| Python | Dashboard generation |
+| plotly / altair / bokeh | Interactive and static visualizations |
+| Jupyter / panel / dash | HTML report rendering |
 | GitHub Pages | Static site hosting |
 | GitHub Actions | Automated deployment |
 
