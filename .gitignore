@@ -1,0 +1,10 @@
+# =============================================================================================================
+# GITIGNORE FILE
+#
+# This file tells Git which files and folders should NOT be tracked. It is used to prevent committing temporary
+# files, sensitive data, environment configs, and system‑generated artifacts.
+# =============================================================================================================
+
+
+# Application log files.
+logs/
